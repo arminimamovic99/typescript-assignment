@@ -1,0 +1,23 @@
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { IMessage } from '../message';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MessageStateService {
+  private messages$ = new BehaviorSubject<IMessage[]>([] as IMessage[]);
+
+  constructor() { }
+
+  getMessages$(): Observable<IMessage[]> {
+    return this.messages$;
+  }
+
+  emitMessages(messages: IMessage[]) {
+    console.log('emit: ', messages);
+    this.messages$.next(messages);
+  }
+
+
+}
