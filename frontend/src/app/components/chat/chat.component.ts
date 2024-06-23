@@ -25,7 +25,7 @@ import { Observable, tap } from 'rxjs';
 export class ChatComponent {
   messageService = inject(MessageService)
   messageStateService = inject(MessageStateService);
-  messages$: Observable<IMessage[]> = this.messageStateService.getMessages$().pipe(tap((msgs) => console.log({msgs})));
+  messages$: Observable<IMessage[]> = this.messageStateService.getMessages$();
 
   constructor() {}
 

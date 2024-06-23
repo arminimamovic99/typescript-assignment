@@ -36,7 +36,6 @@ const messages: IMessage[] = [
 ];
 
 app.post('/messages', authenticate, (req: Request, res: Response, next: NextFunction) => {
-  console.log(req.body);
   try {
     const message = req.body;
     if (!message) {
