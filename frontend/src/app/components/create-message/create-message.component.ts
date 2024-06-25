@@ -25,7 +25,8 @@ export class CreateMessageComponent {
   message: IMessage = {
     status: 'draft',
     text: '',
-    createdBy: localStorage.getItem('user') as string
+    createdBy: localStorage.getItem('user') as string,
+    createdOn: ''
   };
   private messageService = inject(MessageService);
   private authService = inject(AuthService);
@@ -38,6 +39,7 @@ export class CreateMessageComponent {
 
   async onSubmit() {
       this.message.status = 'sent';
+      this.message.createdOn = new Date().toISOString();
       this.messageService.createMessage(this.message)
         .pipe(
           takeUntil(this.destroy$),

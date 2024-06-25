@@ -3,7 +3,7 @@ import { MessageService } from '../../../services/message.service';
 import { AsyncPipe, NgForOf } from '@angular/common';
 import { MessageComponent } from '../message/message.component';
 import { MessageStateService } from '../../../services/message-state.service';
-import { Observable, Subject, takeUntil, tap } from 'rxjs';
+import { Observable, Subject, map, takeUntil, tap } from 'rxjs';
 import { IMessage } from '../../../../../shared/models/message';
 import { AuthService } from '../../../services/auth.service';
 
@@ -22,7 +22,14 @@ export class ChatComponent {
   messageService = inject(MessageService)
   messageStateService = inject(MessageStateService);
   authService = inject(AuthService);
-  messages$: Observable<IMessage[]> = this.messageStateService.getMessages$();
+  messages$: Observable<IMessage[]> = this.messageStateService.getMessages$()
+    .pipe(
+      map((array) => {
+        return array.sort(function(a,b){
+          return new Date(b.createdOn).getTime() - new Date(a.createdOn).getTime();
+        });
+      })
+    );
 
   destroy$ = new Subject<void>();
 

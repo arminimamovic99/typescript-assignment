@@ -1,4 +1,4 @@
-import { NgClass } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { IMessage } from '../../../../../shared/models/message';
 
@@ -7,7 +7,8 @@ import { IMessage } from '../../../../../shared/models/message';
   standalone: true,
   templateUrl: './message.component.html',
   imports: [
-    NgClass
+    NgClass,
+    DatePipe
   ]
 })
 export class MessageComponent {
