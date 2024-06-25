@@ -18,9 +18,11 @@ paths:
                   properties:
                     message:
                       type: string
-                    user:
-                      type: string
                     status: 
+                      type: string
+                    createdBy:
+                      type: string
+                    createdOn: 
                       type: string
     post:
       summary: Send a new message
@@ -33,9 +35,11 @@ paths:
               properties:
                 message:
                   type: string
-                user:
-                  type: string
                 status: 
+                  type: string
+                createdBy:
+                  type: string
+                createdOn:
                   type: string
       responses:
         '200':
