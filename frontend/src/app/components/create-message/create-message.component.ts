@@ -48,7 +48,7 @@ export class CreateMessageComponent {
             },
             error: (err) => {
               console.error(err);
-              if (err.code === 403) {
+              if (err.status === 403) {
                 this.authService.logout();
               }
             }

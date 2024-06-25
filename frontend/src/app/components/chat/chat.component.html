@@ -1,4 +1,4 @@
-<div>
+<div class="messages">
   <div *ngFor="let message of messages$ | async; index as i;">
     <app-message [message]="message"></app-message>
   </div>

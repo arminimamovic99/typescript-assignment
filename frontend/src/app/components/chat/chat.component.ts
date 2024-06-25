@@ -15,7 +15,8 @@ import { AuthService } from '../../../services/auth.service';
     MessageComponent,
     AsyncPipe
   ],
-  templateUrl: "./chat.component.html"
+  templateUrl: "./chat.component.html",
+  styleUrl: "./chat.component.css"
 })
 export class ChatComponent {
   messageService = inject(MessageService)
@@ -35,7 +36,7 @@ export class ChatComponent {
           next: (res) => this.messageStateService.emitMessages(res.messages),
           error: (err) => {
             console.error(err);
-            if (err.code === 403) {
+            if (err.status === 403) {
               this.authService.logout();
             }
           }
