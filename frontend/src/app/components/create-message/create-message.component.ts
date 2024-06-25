@@ -28,6 +28,7 @@ export class CreateMessageComponent {
   };
   private messageService = inject(MessageService);
   private messageStateService = inject(MessageStateService);
+  showError = false;
 
   constructor() {}
 
@@ -35,9 +36,15 @@ export class CreateMessageComponent {
       this.message.status = 'sent';
       this.messageService.createMessage(this.message)
         .pipe(
-          tap(() => {
-            this.message.status = 'draft';
-            this.message.text = '';
+          tap({
+            next: () => {
+              this.message.status = 'draft';
+              this.message.text = '';
+            },
+            error: (err) => {
+              console.error(err);
+
+            }
           }),
           switchMap(() => this.messageService.getMessages()),
           tap((response) => this.messageStateService.emitMessages(response.messages))
