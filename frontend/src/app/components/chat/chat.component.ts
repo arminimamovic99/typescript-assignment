@@ -3,7 +3,7 @@ import { MessageService } from '../../../services/message.service';
 import { AsyncPipe, NgForOf } from '@angular/common';
 import { MessageComponent } from '../message/message.component';
 import { MessageStateService } from '../../../services/message-state.service';
-import { Observable, tap } from 'rxjs';
+import { Observable, Subject, takeUntil, tap } from 'rxjs';
 import { IMessage } from '../../../../../shared/models/message';
 import { AuthService } from '../../../services/auth.service';
 
@@ -23,11 +23,14 @@ export class ChatComponent {
   authService = inject(AuthService);
   messages$: Observable<IMessage[]> = this.messageStateService.getMessages$();
 
+  destroy$ = new Subject<void>();
+
   constructor() {}
 
   ngOnInit() {
     this.messageService.getMessages()
       .pipe(
+        takeUntil(this.destroy$),
         tap({
           next: (res) => this.messageStateService.emitMessages(res.messages),
           error: (err) => {
@@ -38,5 +41,10 @@ export class ChatComponent {
           }
         })
       ).subscribe();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

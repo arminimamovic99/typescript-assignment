@@ -5,7 +5,7 @@ import { IMessage} from "../../../../../shared/models/message";
 import { MessageService } from "../../../services/message.service";
 import { MessageComponent } from "../message/message.component";
 import { MessageStateService } from "../../../services/message-state.service";
-import { switchMap, tap } from "rxjs";
+import { Subject, switchMap, takeUntil, tap } from "rxjs";
 import { AuthService } from "../../../services/auth.service";
 
 @Component({
@@ -32,12 +32,15 @@ export class CreateMessageComponent {
   private messageStateService = inject(MessageStateService);
   showError = false;
 
+  destroy$ = new Subject<void>();
+
   constructor() {}
 
   async onSubmit() {
       this.message.status = 'sent';
       this.messageService.createMessage(this.message)
         .pipe(
+          takeUntil(this.destroy$),
           tap({
             next: () => {
               this.message.status = 'draft';
@@ -53,5 +56,10 @@ export class CreateMessageComponent {
           switchMap(() => this.messageService.getMessages()),
           tap((response) => this.messageStateService.emitMessages(response.messages))
         ).subscribe();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

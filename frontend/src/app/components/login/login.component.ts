@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { tap } from 'rxjs';
+import { Subject, takeUntil, tap } from 'rxjs';
 import { NgIf } from '@angular/common';
 import { statusCodes } from '../../../status-codes';
 
@@ -26,9 +26,12 @@ export class LoginComponent {
   authService = inject(AuthService);
   router = inject(Router);
 
+  destroy$ = new Subject<void>();
+
   login() {
     this.authService.login(this.username, this.password)
       .pipe(
+        takeUntil(this.destroy$),
         tap({
           next: (res => {
             this.router.navigate(['/chat']);
@@ -52,5 +55,10 @@ export class LoginComponent {
         this.errorMessage = "An error has occured";
       }
     })
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
