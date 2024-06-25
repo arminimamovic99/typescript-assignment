@@ -4,6 +4,8 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import basicAuth from 'basic-auth';
 import cors from 'cors';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 const app = express();
 const port = 3000;
@@ -13,34 +15,55 @@ app.use(morgan('dev'));
 app.use(cors());
 
 
-// Mock users
-const users: any = {
-  user1: { password: 'password1' },
-  user2: { password: 'password2' }
-};
+const JWT_SECRET = '3suzZyVFkdNVJFMJweV6RPjeDiAzW0XFX59nXr77UeA=y';
+interface User {
+  username: string;
+  password: string;
+}
 
-// Authentication middleware
-const authenticate = (req: Request, res: Response, next: NextFunction) => {
-  const user = basicAuth(req);
+const users: User[] = [
+  { username: 'user1', password: bcrypt.hashSync('password1', 8) },
+  { username: 'user2', password: bcrypt.hashSync('password2', 8) }
+];
 
-  if (user && users[user.name] && users[user.name].password === user.pass) {
-    next();
+const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
+  const token = req.header('Authorization')?.split(' ')[1];
+  
+  if (token) {
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+      if (err) {
+        return res.sendStatus(403);
+      }
+      //@ts-ignore
+      req.user = user;
+      next();
+    });
   } else {
-    res.setHeader('WWW-Authenticate', 'Basic realm="example"');
-    res.status(401).json({ success: false, message: 'Authentication required' });
+    res.sendStatus(401);
   }
 };
 
-const messages: IMessage[] = [
-{text: 'aga laga', status: 'pending'}
-];
+const messages: IMessage[] = [];
 
-app.post('/messages', authenticate, (req: Request, res: Response, next: NextFunction) => {
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  const user = users.find(u => u.username === username);
+  if (user && bcrypt.compareSync(password, user.password)) {
+    const token = jwt.sign({ username: user.username }, JWT_SECRET, { expiresIn: '1h' });
+    res.json({ token, user: user.username });
+  } else {
+    res.status(401).send('Username or password is incorrect');
+  }
+});
+
+app.post('/messages', authenticateJWT, (req: Request, res: Response, next: NextFunction) => {
   try {
     const message = req.body;
     if (!message) {
       throw new Error('Message is required');
     }
+    message.status = 'delivered';
     messages.push(message);
     res.status(201).json({ success: true, message: 'Message received' });
   } catch (error) {
@@ -48,7 +71,7 @@ app.post('/messages', authenticate, (req: Request, res: Response, next: NextFunc
   }
 });
 
-app.get('/messages', authenticate, (req: Request, res: Response, next: NextFunction) => {
+app.get('/messages', authenticateJWT, (req: Request, res: Response, next: NextFunction) => {
   try {
     res.status(200).json({ success: true, messages });
   } catch (error) {

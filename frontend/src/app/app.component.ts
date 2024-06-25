@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ChatComponent } from './components/chat/chat.component';
 import { CreateMessageComponent } from './components/create-message/create-message.component';
+import { RouterOutlet } from '@angular/router';
 
 
 @Component({
@@ -8,14 +9,12 @@ import { CreateMessageComponent } from './components/create-message/create-messa
   standalone: true,
   imports: [
       ChatComponent,
-      CreateMessageComponent
+      CreateMessageComponent,
+      RouterOutlet
   ],
   template: `
-    <div class="max-w-md mx-auto">
-      <h1 class="text-2xl my-8">{{ title }}</h1>
-      <app-chat></app-chat>
-      <app-create-message></app-create-message>
-    </div>
+    <router-outlet></router-outlet>
+
   `,
 })
 export class AppComponent {

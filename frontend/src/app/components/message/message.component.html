@@ -1,1 +1,6 @@
-<p>message works!</p>
+<div style="background-color: #fff;" class="my-2">
+  <span class="bg-slate-400" class="block bg-slate-500 text-slate-200 p-1"> {{ message.createdBy }} - {{ message.status }}</span>
+  <div class="p-2" [ngClass]="{'text-slate-500': message.status === 'draft'}">
+    {{message.text}}
+  </div>
+</div>

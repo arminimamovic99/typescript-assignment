@@ -1,7 +1,7 @@
 import { NgIf, NgClass } from "@angular/common";
 import { Component, inject } from "@angular/core";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
-import { IMessage, Message } from "../../../message";
+import { IMessage} from "../../../../../shared/models/message";
 import { MessageService } from "../../../services/message.service";
 import { MessageComponent } from "../message/message.component";
 import { MessageStateService } from "../../../services/message-state.service";
@@ -23,7 +23,8 @@ import { switchMap, tap } from "rxjs";
 export class CreateMessageComponent {
   message: IMessage = {
     status: 'draft',
-    text: ''
+    text: '',
+    createdBy: localStorage.getItem('user') as string
   };
   private messageService = inject(MessageService);
   private messageStateService = inject(MessageStateService);
@@ -34,6 +35,10 @@ export class CreateMessageComponent {
       this.message.status = 'sent';
       this.messageService.createMessage(this.message)
         .pipe(
+          tap(() => {
+            this.message.status = 'draft';
+            this.message.text = '';
+          }),
           switchMap(() => this.messageService.getMessages()),
           tap((response) => this.messageStateService.emitMessages(response.messages))
         ).subscribe();

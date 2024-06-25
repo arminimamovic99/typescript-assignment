@@ -15,9 +15,6 @@ export class MessageStateService {
   }
 
   emitMessages(messages: IMessage[]) {
-    console.log('emit: ', messages);
     this.messages$.next(messages);
   }
-
-
 }
