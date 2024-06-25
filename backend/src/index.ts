@@ -6,6 +6,8 @@ import basicAuth from 'basic-auth';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import { getPlugins, loadPlugins } from './plugin-loader';
+import path from 'path';
 
 const app = express();
 const port = 3000;
@@ -13,7 +15,6 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 app.use(cors());
-
 
 const JWT_SECRET = '3suzZyVFkdNVJFMJweV6RPjeDiAzW0XFX59nXr77UeA=y';
 interface User {
@@ -25,6 +26,16 @@ const users: User[] = [
   { username: 'user1', password: bcrypt.hashSync('password1', 8) },
   { username: 'user2', password: bcrypt.hashSync('password2', 8) }
 ];
+
+loadPlugins(path.join(__dirname, 'plugins'));
+
+app.use((req, res, next) => {
+  const plugins = getPlugins();
+  //@ts-ignore
+  req.plugins = plugins;
+  next();
+});
+
 
 const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
   const token = req.header('Authorization')?.split(' ')[1];
@@ -65,6 +76,7 @@ app.post('/messages', authenticateJWT, (req: Request, res: Response, next: NextF
     }
     message.status = 'delivered';
     messages.push(message);
+
     res.status(201).json({ success: true, message: 'Message received' });
   } catch (error) {
     next(error);
