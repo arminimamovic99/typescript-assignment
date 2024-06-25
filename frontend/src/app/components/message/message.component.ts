@@ -12,5 +12,4 @@ import { IMessage } from '../../../../../shared/models/message';
 })
 export class MessageComponent {
   @Input({ required: true }) message!: IMessage;
-  @Input() no: any;
 }

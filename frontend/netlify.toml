@@ -1,0 +1,8 @@
+[build]
+  command = "npm run build"
+  publish = "dist/frontend/browser"  # Make sure this matches the output path of your Angular build
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

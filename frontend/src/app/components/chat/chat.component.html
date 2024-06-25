@@ -1,1 +1,5 @@
-<p>chat works!</p>
+<div>
+  <div *ngFor="let message of messages$ | async; index as i;">
+    <app-message [message]="message"></app-message>
+  </div>
+</div>
