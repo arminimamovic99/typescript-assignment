@@ -6,6 +6,7 @@ import { MessageService } from "../../../services/message.service";
 import { MessageComponent } from "../message/message.component";
 import { MessageStateService } from "../../../services/message-state.service";
 import { switchMap, tap } from "rxjs";
+import { AuthService } from "../../../services/auth.service";
 
 @Component({
   selector: 'app-create-message',
@@ -27,6 +28,7 @@ export class CreateMessageComponent {
     createdBy: localStorage.getItem('user') as string
   };
   private messageService = inject(MessageService);
+  private authService = inject(AuthService);
   private messageStateService = inject(MessageStateService);
   showError = false;
 
@@ -43,7 +45,9 @@ export class CreateMessageComponent {
             },
             error: (err) => {
               console.error(err);
-
+              if (err.code === 403) {
+                this.authService.logout();
+              }
             }
           }),
           switchMap(() => this.messageService.getMessages()),

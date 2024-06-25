@@ -5,6 +5,7 @@ import { MessageComponent } from '../message/message.component';
 import { MessageStateService } from '../../../services/message-state.service';
 import { Observable, tap } from 'rxjs';
 import { IMessage } from '../../../../../shared/models/message';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-chat',
@@ -19,6 +20,7 @@ import { IMessage } from '../../../../../shared/models/message';
 export class ChatComponent {
   messageService = inject(MessageService)
   messageStateService = inject(MessageStateService);
+  authService = inject(AuthService);
   messages$: Observable<IMessage[]> = this.messageStateService.getMessages$();
 
   constructor() {}
@@ -26,7 +28,15 @@ export class ChatComponent {
   ngOnInit() {
     this.messageService.getMessages()
       .pipe(
-        tap((res) => this.messageStateService.emitMessages(res.messages))
+        tap({
+          next: (res) => this.messageStateService.emitMessages(res.messages),
+          error: (err) => {
+            console.error(err);
+            if (err.code === 403) {
+              this.authService.logout();
+            }
+          }
+        })
       ).subscribe();
   }
 }
