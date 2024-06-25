@@ -1,6 +1,6 @@
 ## Overview of features/changes
 
-- In the frontend I focused on eliminating bad practices and using industry standard approaches - Observables and reactive programming
+- In the frontend I focused on eliminating bad practices and using industry standard approaches - Observables and reactive programming, while making the UI simple, efficient and responsive.
 - The backend is a simple Express server with a RESTful API and authentication
 
 Refactoring:
