@@ -20,9 +20,8 @@ paths:
                       type: string
                     user:
                       type: string
-                    timestamp:
+                    status: 
                       type: string
-  /message:
     post:
       summary: Send a new message
       requestBody:
@@ -36,8 +35,29 @@ paths:
                   type: string
                 user:
                   type: string
+                status: 
+                  type: string
       responses:
         '200':
           description: Message sent successfully
         '400':
           description: Bad request, invalid input
+  /login:
+    post:
+      summary: Login to the application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+        '401':
+          description: Unauthorized, invalid credentials
