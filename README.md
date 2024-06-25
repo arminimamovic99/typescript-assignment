@@ -1,3 +1,35 @@
+## Overview of features/changes
+
+- In the frontend I focused on eliminating bad practices and using industry standard approaches - Observables and reactive programming, while making the UI simple, efficient and responsive.
+- The backend is a simple Express server with a RESTful API and authentication
+
+Refactoring:
+
+- I started with analizing the project code, identifiying bad practices and setting up better architecture.
+First and foremost I noticed all classes were in one file, the app.component.ts. 
+I separated each class into it's own file, fixed some typos I found and refactored the MessageService to use observables instead of promises. I also removed the Message class and switched to using an interface. Currently it's located in shared/models.
+
+Authentication:
+
+- I proceeded to set up the API with basic endpoints to add new and retrieve existing messages. I added token-based authorization which i found most fitting for this kind of application.
+When a user logs in, we return a token from the API, which is then stored in local storage. As long as the token is present, the user is authorized and can access the /chat route where they can read and add messages. If the token is not present in the storage, the user is redirected to the login page. And vice-versa, if a user tries to reach the login page but is already authorized, they are automatically redirected to the app.
+Also, I added an interceptor to add the token to each request, so that it is not done in each service method before the request is sent. The backend will throw a 401 unauthorized error if a request is sent without a token.
+I must note that we use dummy users defined in the backend since this is just a proof-of-knowledge mock application.
+
+Routing: 
+
+- Since routes were not configured, I set it up and added 2 routes: /login and /chat.
+- I added the router outlet into the root component instead of rendering each component from there.
+- The /chat route is protected by an CanActivate auth guard.
+- The /login route is also 'protected' by a CanActivate guard which redirects the user to /chat if they are already logged in.
+
+Chat:
+
+- In the chat page, the user can see an overview of messages, and for each message, the user who sent it, and status is shown along with the message content.
+- The user can submit a new message and the page is asynchronously refreshed. 
+
+
+
 ## Overview of the Recruitment Exercise
 
 This is a dummy project, which is used to demonstrate knowledge of node and Angular as well as development in general. It serves as an example with some bad practices included.
