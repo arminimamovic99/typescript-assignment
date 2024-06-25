@@ -13,6 +13,13 @@ When a user logs in, we return a token from the API, which is then stored in loc
 Also, I added an interceptor to add the token to each request, so that it is not done in each service method before the request is sent. The backend will throw a 401 unauthorized error if a request is sent without a token.
 I must note that we use dummy users defined in the backend since this is just a proof-of-knowledge mock application.
 
+Routing: 
+
+- Since routes were not configured, I set it up and added 2 routes: /login and /chat.
+- I added the router outlet into the root component instead of rendering each component from there.
+- The /chat route is protected by an CanActivate auth guard.
+- The /login route is also 'protected' by a CanActivate guard which redirects the user to /chat if they are already logged in.
+
 Chat:
 
 - In the chat page, the user can see an overview of messages, and for each message, the user who sent it, and status is shown along with the message content.
