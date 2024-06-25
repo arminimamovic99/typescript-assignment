@@ -27,6 +27,13 @@ Chat:
 
 - In the chat page, the user can see an overview of messages, and for each message, the user who sent it, and status is shown along with the message content.
 - The user can submit a new message and the page is asynchronously refreshed. 
+- Each message now has a timestamp createdBy, and messages are sorted to show the latest messages first
+
+Plugin System:
+
+- Implemented a simple plugin system.
+- Plugins can be registered in /backend/src/plugins directory and have to implement the Plugin interface.
+- Main server file can then be modified to use the plugins where needed.
 
 
 
