@@ -2,7 +2,6 @@ import { IMessage } from '../../shared/models/message';
 import express, { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
-import basicAuth from 'basic-auth';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
