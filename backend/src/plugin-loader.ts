@@ -7,6 +7,11 @@ const plugins: Plugin[] = [];
 export function loadPlugins(pluginDirectory: string): void {
   const files = fs.readdirSync(pluginDirectory);
 
+  if (!files || files.length === 0) {
+    console.log('No plugins found, continuing');
+    return;
+  }
+
   files.forEach(file => {
     const pluginPath = path.join(pluginDirectory, file);
     const pluginModule = require(pluginPath);

@@ -30,7 +30,6 @@ loadPlugins(path.join(__dirname, 'plugins'));
 
 app.use((req, res, next) => {
   const plugins = getPlugins();
-  //@ts-ignore
   req.plugins = plugins;
   next();
 });
@@ -44,8 +43,6 @@ const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
       if (err) {
         return res.sendStatus(403);
       }
-      //@ts-ignore
-      req.user = user;
       next();
     });
   } else {
@@ -70,12 +67,17 @@ app.post('/login', (req, res) => {
 app.post('/messages', authenticateJWT, (req: Request, res: Response, next: NextFunction) => {
   try {
     const message = req.body;
+    const plugins = req.plugins;
+
     if (!message) {
       throw new Error('Message is required');
     }
     message.status = 'delivered';
     messages.push(message);
 
+    plugins?.forEach((plugin) => {
+      messages.push(plugin.transformMessage(message.text))
+    })
     res.status(201).json({ success: true, message: 'Message received' });
   } catch (error) {
     next(error);
