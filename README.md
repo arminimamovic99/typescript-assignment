@@ -34,7 +34,9 @@ Plugin System:
 - Implemented a simple plugin system.
 - Plugins can be registered in /backend/src/plugins directory and have to implement the Plugin interface.
 - Main server file can then be modified to use the plugins where needed.
-
+- You can simply delete the plugin file from the plugins folder once it's not needed anymore.
+- Implemented a simple chatbot plugin that responds to messages.
+- Extended Express' Request type to add a custom property 'plugins' in order to register and use the plugins.
 
 
 ## Overview of the Recruitment Exercise
