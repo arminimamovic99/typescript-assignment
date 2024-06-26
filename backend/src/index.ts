@@ -7,6 +7,9 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { getPlugins, loadPlugins } from './plugin-loader';
 import path from 'path';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 const port = 3000;
@@ -15,7 +18,7 @@ app.use(bodyParser.json());
 app.use(morgan('dev'));
 app.use(cors());
 
-const JWT_SECRET = '3suzZyVFkdNVJFMJweV6RPjeDiAzW0XFX59nXr77UeA=y';
+const JWT_SECRET = process.env.JWT_SECRET as string;
 interface User {
   username: string;
   password: string;
@@ -69,8 +72,9 @@ app.post('/messages', authenticateJWT, (req: Request, res: Response, next: NextF
     const message = req.body;
     const plugins = req.plugins;
 
-    if (!message) {
-      throw new Error('Message is required');
+  
+    if (!message || !message.text || !message.user) {
+      return res.status(400).json({ success: false, message: 'Invalid message data' });
     }
     message.status = 'delivered';
     messages.push(message);
