@@ -73,7 +73,7 @@ app.post('/messages', authenticateJWT, (req: Request, res: Response, next: NextF
     const plugins = req.plugins;
 
   
-    if (!message || !message.text || !message.user) {
+    if (!message || !message.text || !message.createdBy) {
       return res.status(400).json({ success: false, message: 'Invalid message data' });
     }
     message.status = 'delivered';
